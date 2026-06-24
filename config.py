@@ -17,7 +17,7 @@ class QAConfig:
 
     PRICE_INPUT_1M = 0.075
     PRICE_OUTPUT_1M = 0.30
-    MODEL_NAME = "models/gemini-1.5-flash"
+    MODEL_NAME = "models/gemini-2.5-flash"
 
     @classmethod
     def calculate_cost(cls, input_tokens: int, output_tokens: int) -> float:
