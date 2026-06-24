@@ -2,7 +2,7 @@ import os
 
 class QAConfig:
     LOGO_FILE = "logo.png"
-    PAGE_TITLE = "OS Precision Audit | Enterprise"
+    PAGE_TITLE = "Tatweer ProperT QA | Enterprise"
     PAGE_ICON = "logo.png"
 
     PRIMARY_COLOR = "#ed4224"

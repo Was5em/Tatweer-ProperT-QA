@@ -15,7 +15,7 @@ from config import QAConfig
 from database import SessionLocal, User, AnalysisQueue, ActivityLog, UsageLog, PromptConfig, AuthManager, DataManager
 from core import background_analysis, SECTION_MAX, OFFICIAL_SCORECARD_PROMPT, PDFManager
 
-app = FastAPI(title="OS Precision API", version="2.3.2")
+app = FastAPI(title="Tatweer ProperT QA API", version="2.3.2")
 
 app.add_middleware(
     CORSMiddleware,

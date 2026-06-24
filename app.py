@@ -578,7 +578,7 @@ class UIHandler:
             st.markdown(f"""
                 <div style='text-align: center; margin-bottom: 28px;'>
                     {logo_html}
-                    <h1 style='color: {QAConfig.PRIMARY_COLOR}; font-weight: 800; margin: 0 0 6px; font-size: 2.4rem; letter-spacing: -0.02em;'>OS PRECISION</h1>
+                    <h1 style='color: {QAConfig.PRIMARY_COLOR}; font-weight: 800; margin: 0 0 6px; font-size: 2.4rem; letter-spacing: -0.02em;'>TATWEER PROPERT QA</h1>
                     <p style='color: {QAConfig.TEXT_LIGHT}; font-size: 1rem; margin: 0;'>Enterprise Quality Assurance Portal</p>
                     <div style="font-size:0.75rem; background:rgba(237,66,36,0.12); color:{QAConfig.PRIMARY_COLOR}; border: 1px solid rgba(237,66,36,0.25); border-radius:12px; padding:2px 8px; display:inline-block; margin-top:8px; font-weight:600;">{APP_VERSION}</div>
                 </div>
@@ -1835,7 +1835,7 @@ def main():
         st.markdown(f"""
             <div class="sidebar-logo">
                 {logo_img}
-                <div class="sidebar-brand">OS PRECISION</div>
+                <div class="sidebar-brand">TATWEER PROPERT QA</div>
                 <div class="sidebar-tagline">Enterprise Audit System</div>
                 <div style="font-size:0.75rem; background:rgba(237,66,36,0.12); color:{QAConfig.PRIMARY_COLOR}; border: 1px solid rgba(237,66,36,0.25); border-radius:12px; padding:2px 8px; display:inline-block; margin-top:8px; font-weight:600;">{APP_VERSION}</div>
             </div>

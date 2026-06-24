@@ -1,4 +1,4 @@
-# 🛡️ OS Precision Audit — Enterprise QA Platform
+# 🛡️ Tatweer ProperT QA — Enterprise QA Platform
 
 ![Version](https://img.shields.io/badge/version-v2.4.0-orange?style=for-the-badge)
 ![Python](https://img.shields.io/badge/python-3.11+-blue?style=for-the-badge)
@@ -25,7 +25,7 @@
 
 ## Overview
 
-OS Precision Audit is an enterprise-grade QA platform that automatically analyzes call center audio recordings using Google's Gemini AI. It identifies the correct campaign (Tatweer Misr or Proper T) and call type, grades agents against an official error-based deductive scorecard, flags critical compliance violations, and provides coaching recommendations — all through a modern web interface.
+Tatweer ProperT QA is an enterprise-grade QA platform that automatically analyzes call center audio recordings using Google's Gemini AI. It identifies the correct campaign (Tatweer Misr or Proper T) and call type, grades agents against an official error-based deductive scorecard, flags critical compliance violations, and provides coaching recommendations — all through a modern web interface.
 
 The application is structured as a **Single Page Application (SPA)** with a vanilla HTML5/CSS3/JS client communicating with a high-performance **FastAPI** backend. All evaluations, history logs, and user credentials are secure and managed via SQLAlchemy.
 

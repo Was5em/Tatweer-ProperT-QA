@@ -587,7 +587,7 @@ class PDFManager:
                 buf, pagesize=A4,
                 leftMargin=_MARGIN, rightMargin=_MARGIN,
                 topMargin=18 * mm,  bottomMargin=18 * mm,
-                title="OS Precision QA Audit Report",
+                title="Tatweer ProperT QA QA Audit Report",
             )
 
             base = getSampleStyleSheet()
@@ -650,7 +650,7 @@ class PDFManager:
                     spaceAfter=0
                 )
 
-                title_p = Paragraph(f"<b><font color='{_PDF_PRIMARY.hexval()}'>OS PRECISION</font></b>", title_style)
+                title_p = Paragraph(f"<b><font color='{_PDF_PRIMARY.hexval()}'>TATWEER PROPERT QA</font></b>", title_style)
                 sub_p = Paragraph("Enterprise QA Audit Report", subtitle_style)
 
                 text_tbl = Table([[title_p], [sub_p]], colWidths=[65 * mm])
@@ -693,7 +693,7 @@ class PDFManager:
                 ]))
                 story.append(header_tbl)
             else:
-                story.append(Paragraph("OS PRECISION", S["title"]))
+                story.append(Paragraph("TATWEER PROPERT QA", S["title"]))
                 story.append(Paragraph("Enterprise QA Audit Report", S["sub"]))
                 story.append(Paragraph(
                     f"{_s(res.get('Campaign', 'Tatweer Misr'))} &nbsp;|&nbsp; Call Type: {_s(res.get('Call_Type', 'General Inquiry'))} &nbsp;|&nbsp; QA Call Evaluation",
@@ -940,7 +940,7 @@ class PDFManager:
 
                 canvas.setFont(font_regular, 7.5)
                 canvas.setFillColor(_PDF_MID)
-                footer_text = "OS Precision Audit System  |  Assurance Hub Marketing  |  Confidential"
+                footer_text = "Tatweer ProperT QA System  |  Assurance Hub Marketing  |  Confidential"
                 canvas.drawString(_MARGIN, 10 * mm, footer_text)
 
                 page_num = f"Page {doc_obj.page}"
