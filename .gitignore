@@ -1,0 +1,22 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Local environment / Temp uploads
+temp_uploads/
+.env
+
+# Backups
+*_backup.py
+app_backup.py
+
+# Editor / IDE settings
+.vscode/
+.idea/
+.DS_Store
