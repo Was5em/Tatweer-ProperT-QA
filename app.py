@@ -203,11 +203,16 @@ class UIHandler:
                 box-shadow: inset 4px 0 0 var(--primary-color), 0 4px 12px rgba(237,66,36,0.08) !important;
                 font-weight: 700 !important;
             }}
-            [data-testid="stSidebar"] div[role="radiogroup"] input[type="radio"] {{
-                display: none !important;
-            }}
+            [data-testid="stSidebar"] [data-testid="stRadio"] label > div:first-child,
+            [data-testid="stSidebar"] div[role="radiogroup"] label > div:first-child,
+            [data-testid="stSidebar"] div[role="radiogroup"] input[type="radio"],
             [data-testid="stSidebar"] div[role="radiogroup"] div[data-testid="stMarker"] {{
                 display: none !important;
+            }}
+            /* Ensure the text is left-aligned and padded */
+            [data-testid="stSidebar"] [data-testid="stRadio"] label p {{
+                padding-left: 0px !important;
+                margin: 0 !important;
             }}
 
             /* ── Page Header ── */
@@ -573,7 +578,7 @@ class UIHandler:
             if logo_base64:
                 logo_html = f'<img src="data:image/png;base64,{logo_base64}" style="width: 120px; margin-bottom: 16px; border-radius: 10px;">'
             else:
-                logo_html = f'<div style="width:80px; height:80px; background:{QAConfig.PRIMARY_COLOR}; border-radius:14px; display:flex; align-items:center; justify-content:center; margin: 0 auto 16px; font-size:2rem;">OS</div>'
+                logo_html = f'<div style="width:80px; height:80px; background:{QAConfig.PRIMARY_COLOR}; border-radius:14px; display:flex; align-items:center; justify-content:center; margin: 0 auto 16px; font-size:2rem;">TP</div>'
 
             st.markdown(f"""
                 <div style='text-align: center; margin-bottom: 28px;'>
@@ -1828,9 +1833,9 @@ def main():
     with st.sidebar:
         logo_base64 = UIHandler.get_base64_image(QAConfig.LOGO_FILE)
         if logo_base64:
-            logo_img = f'<img src="data:image/png;base64,{logo_base64}" style="width:90px; border-radius:8px; margin-bottom:10px;">'
+            logo_img = f'<img src="data:image/png;base64,{logo_base64}" style="width:90px; margin-bottom:10px;">'
         else:
-            logo_img = f'<div style="width:60px; height:60px; background:{QAConfig.PRIMARY_COLOR}; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:1.6rem; margin: 0 auto 10px;">OS</div>'
+            logo_img = f'<div style="width:60px; height:60px; background:{QAConfig.PRIMARY_COLOR}; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:1.6rem; margin: 0 auto 10px;">TP</div>'
 
         st.markdown(f"""
             <div class="sidebar-logo">
