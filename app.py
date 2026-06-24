@@ -25,7 +25,7 @@ def _e(val) -> str:
         return "N/A"
     return html.escape(str(val))
 
-APP_VERSION = "v2.3.2"
+APP_VERSION = "v1.0.0"
 
 _global_executor = ThreadPoolExecutor(max_workers=3)
 

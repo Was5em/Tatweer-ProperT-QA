@@ -1,6 +1,6 @@
 # 🛡️ Tatweer ProperT QA — Enterprise QA Platform
 
-![Version](https://img.shields.io/badge/version-v2.4.0-orange?style=for-the-badge)
+![Version](https://img.shields.io/badge/version-v1.0.0-orange?style=for-the-badge)
 ![Python](https://img.shields.io/badge/python-3.11+-blue?style=for-the-badge)
 ![FastAPI](https://img.shields.io/badge/fastapi-latest-teal?style=for-the-badge)
 ![Vanilla JS](https://img.shields.io/badge/vanilla_js-HTML5/CSS3-gold?style=for-the-badge)
@@ -185,7 +185,7 @@ Errors are dynamically mapped to four categories:
 
 ## Changelog
 
-### v2.4.0 (Current Release)
+### v1.0.0 (Current Release)
 - 🏢 **Multi-Campaign Support:** Adapted the entire platform to evaluate **Tatweer Misr** (Real Estate CS/Sales) and **Proper T** (Facility Management) calls.
 - 🗣️ **Auto-Detection:** Gemini automatically identifies the campaign and call type from the audio recording context.
 - 📐 **Deductive Scoring Model:** Replaced old criteria with the Error-Based Deductive model using 8 sections and specific error codes (BC, EC, CC, NC).
