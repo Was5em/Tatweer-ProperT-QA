@@ -1,0 +1,63 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: qa-postgres-db
+    restart: always
+    environment:
+      POSTGRES_USER: qa_admin
+      POSTGRES_PASSWORD: secure_db_password_123!
+      POSTGRES_DB: qa_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  redis:
+    image: redis:7-alpine
+    container_name: qa-redis-broker
+    restart: always
+    ports:
+      - "6379:6379"
+
+  qa-app:
+    build: .
+    container_name: qa-automation-app
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./temp_uploads:/app/temp_uploads
+    environment:
+      - GOOGLE_API_KEY=your_google_api_key_here
+      - COOKIE_SIGNING_SECRET=9b7d8d21c3b4e9f0a6d5c2e1b0a9f8e7d6c5b4a3f2e1d0c9b8a7f6e5d4c3b2a1
+      - ADMIN_USERNAME=admin
+      - ADMIN_PASSWORD=@A152007#
+      - AUDITOR_USERNAME=auditor1
+      - AUDITOR_PASSWORD=@aud152007#
+      - DATABASE_URL=postgresql://qa_admin:secure_db_password_123!@db:5432/qa_db
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+    depends_on:
+      - db
+      - redis
+    restart: always
+
+  celery-worker:
+    build: .
+    container_name: qa-celery-worker
+    command: celery -A tasks.celery_app worker --loglevel=info
+    volumes:
+      - ./temp_uploads:/app/temp_uploads
+    environment:
+      - GOOGLE_API_KEY=your_google_api_key_here
+      - DATABASE_URL=postgresql://qa_admin:secure_db_password_123!@db:5432/qa_db
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+    depends_on:
+      - db
+      - redis
+    restart: always
+
+volumes:
+  postgres_data:
