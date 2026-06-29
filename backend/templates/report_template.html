@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>OS Precision Audit - Scorecard Report</title>
+  <style>
+    :root {
+      --bg: #f4f7fe;
+      --bg2: #ffffff;
+      --bg3: #e9edf7;
+      --text: #1b254b;
+      --text2: #68769f;
+      --text3: #a3aed1;
+      --border: #e9edf7;
+      --accent: #4318ff;
+      --green: #01b574;
+      --red: #ee5d50;
+    }
+
+    body {
+      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      margin: 0;
+      padding: 30px;
+      direction: ltr;
+    }
+
+    .report-card {
+      background: var(--bg2);
+      border-radius: 16px;
+      padding: 35px;
+      border: 1px solid var(--border);
+      box-shadow: 0 10px 30px rgba(112, 144, 176, 0.08);
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .header {
+      border-bottom: 2px solid var(--border);
+      padding-bottom: 20px;
+      margin-bottom: 25px;
+    }
+
+    .header h1 {
+      font-size: 24px;
+      margin: 0;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    .header p {
+      color: var(--text2);
+      font-size: 13px;
+      margin: 5px 0 0 0;
+    }
+
+    .overview-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 25px;
+    }
+
+    .overview-table td {
+      padding: 10px 15px;
+      border-bottom: 1px solid var(--border);
+      font-size: 14px;
+    }
+
+    .overview-label {
+      color: var(--text2);
+      font-weight: 600;
+      width: 30%;
+    }
+
+    .overview-val {
+      font-weight: 700;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 5px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .badge.pass {
+      background-color: rgba(1, 181, 116, 0.1);
+      color: var(--green);
+      border: 1px solid rgba(1, 181, 116, 0.2);
+    }
+
+    .badge.fail {
+      background-color: rgba(238, 93, 80, 0.1);
+      color: var(--red);
+      border: 1px solid rgba(238, 93, 80, 0.2);
+    }
+
+    .scores-grid {
+      display: table;
+      width: 100%;
+      table-layout: fixed;
+      margin-bottom: 30px;
+    }
+
+    .score-box {
+      display: table-cell;
+      text-align: center;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      padding: 15px;
+      border-radius: 10px;
+      margin: 0 5px;
+    }
+
+    .score-title {
+      font-size: 11px;
+      color: var(--text2);
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    .score-val {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--accent);
+      margin-top: 5px;
+    }
+
+    .section-title {
+      font-size: 16px;
+      font-weight: 700;
+      margin: 25px 0 12px 0;
+      color: var(--text);
+      border-left: 4px solid var(--accent);
+      padding-left: 10px;
+    }
+
+    .errors-summary {
+      background: rgba(238, 93, 80, 0.05);
+      border: 1px solid rgba(238, 93, 80, 0.15);
+      border-radius: 10px;
+      padding: 20px;
+      color: var(--red);
+      font-size: 14px;
+      line-height: 1.5;
+      margin-bottom: 25px;
+    }
+
+    .timeline-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 30px;
+    }
+
+    .timeline-table th {
+      background: var(--bg);
+      color: var(--text2);
+      font-size: 11px;
+      text-transform: uppercase;
+      font-weight: 700;
+      padding: 10px 15px;
+      text-align: left;
+      border-bottom: 2px solid var(--border);
+    }
+
+    .timeline-table td {
+      padding: 12px 15px;
+      border-bottom: 1px solid var(--border);
+      font-size: 13px;
+    }
+
+    .coaching-section {
+      background: rgba(67, 24, 255, 0.03);
+      border: 1px solid rgba(67, 24, 255, 0.12);
+      border-radius: 10px;
+      padding: 22px;
+      font-size: 13.5px;
+      line-height: 1.6;
+      color: var(--text);
+      white-space: pre-line;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="report-card">
+    <div class="header">
+      <h1>OS Precision Audit</h1>
+      <p>Call Quality Evaluation Report & Agent Scorecard</p>
+    </div>
+
+    <table class="overview-table">
+      <tr>
+        <td class="overview-label">Agent Name</td>
+        <td class="overview-val">{{ agent_name }}</td>
+      </tr>
+      <tr>
+        <td class="overview-label">Call ID</td>
+        <td class="overview-val">{{ call_id }}</td>
+      </tr>
+      <tr>
+        <td class="overview-label">Evaluation Date</td>
+        <td class="overview-val">{{ evaluation_date }}</td>
+      </tr>
+      <tr>
+        <td class="overview-label">Final Status</td>
+        <td>
+          <span class="badge {{ 'pass' if status == 'Pass' else 'fail' }}">
+            {{ status }}
+          </span>
+        </td>
+      </tr>
+      <tr>
+        <td class="overview-label">Total Score</td>
+        <td class="overview-val" style="color: var(--accent); font-size: 16px;">{{ total_score }}</td>
+      </tr>
+    </table>
+
+    <div class="section-title">Audit Metrics Overview</div>
+    <div class="scores-grid">
+      <div class="score-box">
+        <div class="score-title">Connection (CC)</div>
+        <div class="score-val">{{ cc_score }}</div>
+      </div>
+      <div class="score-box">
+        <div class="score-title">Compliance (BC)</div>
+        <div class="score-val">{{ bc_score }}</div>
+      </div>
+      <div class="score-box">
+        <div class="score-title">Execution (EC)</div>
+        <div class="score-val">{{ ec_score }}</div>
+      </div>
+      <div class="score-box">
+        <div class="score-title">Next Steps (NC)</div>
+        <div class="score-val">{{ nc_score }}</div>
+      </div>
+    </div>
+
+    <div class="section-title">Compliance Classifications & Errors</div>
+    <table class="overview-table" style="margin-bottom: 15px;">
+      <tr>
+        <td class="overview-label">Normal Errors (NC)</td>
+        <td class="overview-val">{{ nc_count }}</td>
+      </tr>
+      <tr>
+        <td class="overview-label">Process Errors (BC)</td>
+        <td class="overview-val">{{ bc_count }}</td>
+      </tr>
+      <tr>
+        <td class="overview-label">Critical Errors (EC)</td>
+        <td class="overview-val" style="{{ 'color: var(--red);' if ec_count > 0 else '' }}">{{ ec_count }}</td>
+      </tr>
+    </table>
+
+    {% if errors %}
+    <div class="errors-summary">
+      <strong>Compliance Infractions Logged:</strong><br>
+      {{ errors }}
+    </div>
+    {% endif %}
+
+    <div class="section-title">Detailed Call Evaluation Timeline</div>
+    <table class="timeline-table">
+      <thead>
+        <tr>
+          <th style="width: 15%;">Timestamp</th>
+          <th style="width: 25%;">Category</th>
+          <th style="width: 45%;">Description</th>
+          <th style="width: 15%; text-align: center;">Evaluation</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in detailed_scoring %}
+        <tr>
+          <td><strong>{{ item.timestamp }}</strong></td>
+          <td>{{ item.category }}</td>
+          <td>{{ item.description }}</td>
+          <td style="text-align: center;">
+            <span class="badge {{ 'pass' if item.pass_fail == 'Pass' else 'fail' }}" style="padding: 2px 6px; font-size: 10px;">
+              {{ item.pass_fail }}
+            </span>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <div class="section-title">AI Coaching Feedback & Strategic Roadmap</div>
+    <div class="coaching-section">
+      {{ ai_feedback }}
+    </div>
+  </div>
+
+</body>
+</html>
