@@ -92,16 +92,6 @@
         .timeline-item:last-child {
             margin-bottom: 0;
         }
-        .timeline-marker {
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background-color: #4318ff;
-            position: absolute;
-            left: -10px; /* Adjust based on padding/margin of content */
-            top: 5px;
-            z-index: 1;
-        }
         .timeline-content {
             flex-grow: 1;
             padding-left: 20px;
@@ -111,7 +101,7 @@
         .timeline-content::before {
             content: '';
             position: absolute;
-            left: -11px; /* Align with marker */
+            left: -6px; /* Aligned to center the dot on the 2px border */
             top: 6px;
             width: 10px;
             height: 10px;
