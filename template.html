@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Call Quality Audit Report</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f4f7fe; /* Vibrant Light Theme Background */
+            color: #333;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+        h1, h2, h3 {
+            color: #4318ff; /* Vibrant Light Theme Accent */
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 10px;
+            margin-top: 25px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2.2em;
+            color: #2b3674;
+            border-bottom: 3px solid #4318ff;
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            padding: 12px 15px;
+            border: 1px solid #e0e0e0;
+            text-align: left;
+        }
+        th {
+            background-color: #f0f3f9;
+            color: #4318ff;
+            font-weight: 600;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #fff;
+            font-size: 0.9em;
+        }
+        .status-badge.Pass {
+            background-color: #01b574; /* Green */
+        }
+        .status-badge.Fail {
+            background-color: #ee5d50; /* Red */
+        }
+        .error-summary div {
+            padding: 8px 0;
+            font-size: 1.1em;
+        }
+        .error-summary .label {
+            font-weight: 600;
+            color: #2b3674;
+            margin-right: 10px;
+        }
+        .error-summary .value {
+            font-weight: 700;
+            color: #ee5d50;
+        }
+        .error-summary .label.NC { color: #6c757d; }
+        .error-summary .label.BC { color: #ffc107; }
+        .error-summary .label.EC { color: #dc3545; }
+
+        .timeline-item {
+            display: flex;
+            margin-bottom: 15px;
+            position: relative;
+        }
+        .timeline-item:last-child {
+            margin-bottom: 0;
+        }
+        .timeline-marker {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: #4318ff;
+            position: absolute;
+            left: -10px; /* Adjust based on padding/margin of content */
+            top: 5px;
+            z-index: 1;
+        }
+        .timeline-content {
+            flex-grow: 1;
+            padding-left: 20px;
+            border-left: 2px solid #e0e0e0;
+            position: relative;
+        }
+        .timeline-content::before {
+            content: '';
+            position: absolute;
+            left: -11px; /* Align with marker */
+            top: 6px;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: #ffffff;
+            border: 2px solid #4318ff;
+            z-index: 2;
+        }
+        .timeline-content .timestamp {
+            font-size: 0.9em;
+            color: #777;
+            margin-bottom: 5px;
+            font-weight: 400;
+        }
+        .timeline-content .category {
+            font-weight: 600;
+            color: #2b3674;
+            margin-bottom: 5px;
+        }
+        .timeline-content .description {
+            font-size: 0.95em;
+            color: #555;
+            margin-bottom: 5px;
+        }
+        .timeline-content .status {
+            font-weight: 700;
+            font-size: 0.85em;
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 12px;
+            color: #fff;
+        }
+        .timeline-content .status.Pass {
+            background-color: #01b574;
+        }
+        .timeline-content .status.Fail {
+            background-color: #ee5d50;
+        }
+        .coaching-summary p {
+            background-color: #f0f3f9;
+            border-left: 5px solid #4318ff;
+            padding: 15px;
+            border-radius: 5px;
+            font-size: 1.1em;
+            color: #333;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>OS Precision Audit - Call Quality Report</h1>
+
+        <h2>General Overview</h2>
+        <table>
+            <tr>
+                <th>Agent Name</th>
+                <td>{{ agent_name }}</td>
+            </tr>
+            <tr>
+                <th>Call ID</th>
+                <td>{{ call_id }}</td>
+            </tr>
+            <tr>
+                <th>Evaluation Date</th>
+                <td>{{ evaluation_date.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+            </tr>
+            <tr>
+                <th>Final Status</th>
+                <td><span class="status-badge {{ audit_data.status }}">{{ audit_data.status }}</span></td>
+            </tr>
+            <tr>
+                <th>Total Score (Errors)</th>
+                <td>{{ audit_data.NC + audit_data.BC + audit_data.EC }} (Lower is better)</td>
+            </tr>
+        </table>
+
+        <h2>Compliance & Errors Classification</h2>
+        <div class="error-summary">
+            <div><span class="label NC">Normal Errors (NC):</span> <span class="value">{{ audit_data.NC }}</span></div>
+            <div><span class="label BC">Business Process Errors (BC):</span> <span class="value">{{ audit_data.BC }}</span></div>
+            <div><span class="label EC">Extreme/Critical Errors (EC):</span> <span class="value">{{ audit_data.EC }}</span></div>
+        </div>
+
+        <h2>Detailed Scoring Timeline</h2>
+        {% if audit_data.detailed_scoring %}
+            <div class="timeline">
+                {% for item in audit_data.detailed_scoring %}
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timestamp">{{ item.timestamp }}</div>
+                        <div class="category">{{ item.category }}</div>
+                        <div class="description">{{ item.description }}</div>
+                        <div class="status {{ item.pass_fail }}">{{ item.pass_fail }}</div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>No detailed scoring items available.</p>
+        {% endif %}
+
+        <h2>Critical Gap & Coaching Summary</h2>
+        <div class="coaching-summary">
+            <p>{{ audit_data.coaching_summary }}</p>
+        </div>
+
+    </div>
+</body>
+</html>
