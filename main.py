@@ -9,7 +9,6 @@ from fastapi import FastAPI, UploadFile, File, Form, Depends, HTTPException, sta
 from fastapi.responses import JSONResponse, FileResponse
 from sqlalchemy.orm import Session
 from jinja2 import Environment, FileSystemLoader
-from weasyprint import HTML # Recommended over xhtml2pdf for active development and CSS support
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from slugify import slugify # For sanitizing filenames
 
@@ -167,7 +166,7 @@ def generate_pdf_report(
     evaluation_date: datetime
 ) -> str:
     """
-    Generates a PDF report from the Gemini audit data using Jinja2 and WeasyPrint.
+    Generates a PDF report from the Gemini audit data using Jinja2 and xhtml2pdf.
     """
     try:
         template = jinja_env.get_template("template.html")
@@ -187,7 +186,13 @@ def generate_pdf_report(
         pdf_filename = f"audit_report_{slugify(agent_name)}_{slugify(call_id)}_{evaluation_date.strftime('%Y%m%d%H%M%S')}.pdf"
         pdf_path = os.path.join(settings.pdf_reports_dir, pdf_filename)
 
-        HTML(string=html_content).write_pdf(pdf_path)
+        from xhtml2pdf import pisa
+        with open(pdf_path, "wb") as pdf_file:
+            pisa_status = pisa.CreatePDF(html_content, dest=pdf_file)
+        
+        if pisa_status.err:
+            raise Exception(f"xhtml2pdf error compiling report PDF: code {pisa_status.err}")
+            
         return pdf_path
     except Exception as e:
         raise HTTPException(
@@ -221,7 +226,7 @@ async def audit_call(
     3. Parse the AI's response, including error counts (NC, BC, EC), overall status (Pass/Fail),
        detailed scoring, and coaching summary.
     4. Store the audit results in an SQLite database.
-    5. Generate a professional PDF report using Jinja2 and WeasyPrint,
+    5. Generate a professional PDF report using Jinja2 and xhtml2pdf,
        incorporating a vibrant light theme and detailed sections.
     6. Automatically delete the uploaded audio file to prevent storage overflow.
     7. Return the file path to the generated PDF report for in-app download.

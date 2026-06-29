@@ -7,6 +7,6 @@ google-generativeai
 jinja2
 xhtml2pdf
 python-multipart
-weasyprint # A modern PDF generator for HTML and CSS, often preferred over xhtml2pdf for active development and CSS support
-pydantic-settings # For managing settings like API keys
-python-slugify # For sanitizing filenames
+pydantic-settings
+python-slugify
+reportlab<4.1.0
