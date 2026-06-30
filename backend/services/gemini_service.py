@@ -1,6 +1,7 @@
 import os
 import json
-import google.generativeai as genai
+from google import genai
+from google.genai import types
 from dotenv import load_dotenv
 from schemas import GeminiAuditResult
 import pathlib
@@ -8,11 +9,6 @@ import time
 
 # Load environment variables
 load_dotenv(override=True)
-
-# Configure Gemini SDK
-api_key = os.environ.get("GEMINI_API_KEY")
-if api_key:
-    genai.configure(api_key=api_key)
 
 def compress_audio(file_path: str) -> str:
     """
@@ -36,14 +32,15 @@ def compress_audio(file_path: str) -> str:
 
 def analyze_audio(file_path: str, display_name: str) -> dict:
     """
-    Uploads audio file to Gemini via Files API, executes evaluation prompt, 
-    calculates scores programmatically in Python, and cleans up remote file.
+    Uploads audio file to Gemini via official Google GenAI Files API, 
+    executes evaluation prompt, calculates scores programmatically, and deletes the file.
     """
     current_api_key = os.environ.get("GEMINI_API_KEY")
     if not current_api_key:
         raise ValueError("GEMINI_API_KEY is not configured in the backend environment.")
     
-    genai.configure(api_key=current_api_key)
+    # Initialize the modern Google GenAI Client
+    client = genai.Client(api_key=current_api_key)
 
     # 1. Compress audio if possible
     processed_path = compress_audio(file_path)
@@ -52,7 +49,7 @@ def analyze_audio(file_path: str, display_name: str) -> dict:
     try:
         # 2. Upload to Google Files API
         print(f"Uploading file to Gemini Files API: {processed_path}...")
-        audio_file = genai.upload_file(path=processed_path, display_name=display_name)
+        audio_file = client.files.upload(file=processed_path)
         print(f"Uploaded remote file name: {audio_file.name}, waiting for active state...")
 
         # 3. Wait for file to process
@@ -61,7 +58,7 @@ def analyze_audio(file_path: str, display_name: str) -> dict:
             if time.time() - start_time > 180:
                 raise TimeoutError("Gemini file processing timed out on Google servers.")
             time.sleep(5)
-            audio_file = genai.get_file(audio_file.name)
+            audio_file = client.files.get(name=audio_file.name)
 
         if audio_file.state.name == "FAILED":
             raise RuntimeError("Gemini file processing failed on Google servers.")
@@ -148,15 +145,14 @@ Scorecard Criteria:
 Output the JSON response strictly formatted to match the required schema. Write the coaching summary in 'coaching_summary' in English.
 """
 
-        # 5. Execute generation
-        # We read model from environment if specified, else fall back to gemini-2.5-flash
+        # 5. Execute generation using the new client
         model_name = os.environ.get("GEMINI_MODEL", "gemini-2.5-flash")
-        print(f"Analyzing audio using model {model_name}...")
-        model = genai.GenerativeModel(model_name)
+        print(f"Analyzing audio using modern SDK and model {model_name}...")
         
-        response = model.generate_content(
-            [audio_file, prompt],
-            generation_config=genai.GenerationConfig(
+        response = client.models.generate_content(
+            model=model_name,
+            contents=[audio_file, prompt],
+            config=types.GenerateContentConfig(
                 response_mime_type="application/json",
                 response_schema=GeminiAuditResult
             )
@@ -215,7 +211,7 @@ Output the JSON response strictly formatted to match the required schema. Write 
         if audio_file:
             try:
                 print(f"Cleaning up remote file from Gemini servers: {audio_file.name}...")
-                genai.delete_file(audio_file.name)
+                client.files.delete(name=audio_file.name)
                 print("Remote file deleted successfully.")
             except Exception as cleanup_err:
                 print(f"Failed to delete remote file: {cleanup_err}")
