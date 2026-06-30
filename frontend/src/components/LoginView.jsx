@@ -35,21 +35,21 @@ function LoginView({ API_URL, onLoginSuccess }) {
   };
 
   return (
-    <div className="app-container" style={{ display: "flex", minHeight: "100vh", alignItems: "center", justifyContent: "center", background: "radial-gradient(circle at top, #0f172a 0%, #020617 100%)" }}>
-      <div className="widget-panel" style={{ width: "100%", maxWidth: "420px", padding: "2.5rem", borderRadius: "16px", border: "1px solid rgba(255, 255, 255, 0.05)", background: "rgba(15, 23, 42, 0.6)", backdropFilter: "blur(20px)" }}>
+    <div className="app-container" style={{ display: "flex", minHeight: "100vh", alignItems: "center", justifyContent: "center", background: "linear-gradient(135deg, #f4f7fe 0%, #e9edf7 100%)" }}>
+      <div className="widget-panel" style={{ width: "100%", maxWidth: "420px", padding: "2.5rem", borderRadius: "16px", border: "1px solid #e9edf7", background: "#ffffff", boxShadow: "0 20px 25px -5px rgba(112, 144, 176, 0.15), 0 10px 10px -5px rgba(112, 144, 176, 0.1)" }}>
         
         {/* Title / Logo */}
         <div style={{ textAlign: "center", marginBottom: "2rem" }}>
-          <div style={{ display: "inline-flex", padding: "1rem", borderRadius: "50%", background: "rgba(237, 66, 36, 0.1)", color: "var(--color-primary)", marginBottom: "1rem" }}>
+          <div style={{ display: "inline-flex", padding: "1rem", borderRadius: "50%", background: "rgba(67, 24, 255, 0.08)", color: "var(--color-primary)", marginBottom: "1rem" }}>
             <ShieldCheck size={40} />
           </div>
-          <h2 style={{ fontSize: "1.75rem", fontWeight: "900", color: "#ffffff", letterSpacing: "-0.5px" }}>OS Precision Audit</h2>
-          <p style={{ fontSize: "0.85rem", color: "#64748b", marginTop: "0.25rem" }}>Call Quality QA Portal - Admin Login</p>
+          <h2 style={{ fontSize: "1.75rem", fontWeight: "900", color: "#1b254b", letterSpacing: "-0.5px" }}>OS Precision Audit</h2>
+          <p style={{ fontSize: "0.85rem", color: "#a3b1cc", marginTop: "0.25rem", fontWeight: "600" }}>Call Quality QA Portal - Admin Login</p>
         </div>
 
         {/* Error Banner */}
         {error && (
-          <div style={{ display: "flex", gap: "0.5rem", alignItems: "center", background: "rgba(244, 63, 94, 0.08)", border: "1px solid rgba(244, 63, 94, 0.2)", padding: "0.75rem 1rem", borderRadius: "8px", color: "#fda4af", fontSize: "0.85rem", marginBottom: "1.5rem" }}>
+          <div style={{ display: "flex", gap: "0.5rem", alignItems: "center", background: "#fdeeed", border: "1px solid #fcdcdc", padding: "0.75rem 1rem", borderRadius: "8px", color: "#ee5d50", fontSize: "0.85rem", marginBottom: "1.5rem" }}>
             <AlertCircle size={16} style={{ flexShrink: 0 }} />
             <span>{error}</span>
           </div>
@@ -66,10 +66,10 @@ function LoginView({ API_URL, onLoginSuccess }) {
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               className="floating-input"
-              style={{ paddingLeft: "2.75rem" }}
+              style={{ paddingLeft: "2.75rem", background: "#ffffff", color: "#1b254b", borderColor: "#e9edf7" }}
               required
             />
-            <User size={18} style={{ position: "absolute", left: "1rem", top: "1rem", color: "#475569" }} />
+            <User size={18} style={{ position: "absolute", left: "1rem", top: "1rem", color: "#a3b1cc" }} />
             <label className="floating-label" style={{ left: "2.75rem" }}>Username</label>
           </div>
 
@@ -81,10 +81,10 @@ function LoginView({ API_URL, onLoginSuccess }) {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="floating-input"
-              style={{ paddingLeft: "2.75rem" }}
+              style={{ paddingLeft: "2.75rem", background: "#ffffff", color: "#1b254b", borderColor: "#e9edf7" }}
               required
             />
-            <Lock size={18} style={{ position: "absolute", left: "1rem", top: "1rem", color: "#475569" }} />
+            <Lock size={18} style={{ position: "absolute", left: "1rem", top: "1rem", color: "#a3b1cc" }} />
             <label className="floating-label" style={{ left: "2.75rem" }}>Password</label>
           </div>
 
@@ -99,7 +99,7 @@ function LoginView({ API_URL, onLoginSuccess }) {
           </button>
         </form>
 
-        <div style={{ textAlign: "center", marginTop: "2rem", fontSize: "0.75rem", color: "#475569" }}>
+        <div style={{ textAlign: "center", marginTop: "2rem", fontSize: "0.75rem", color: "#a3b1cc", fontWeight: "600" }}>
           OS Precision Audit System v2.0 • Secure Administration
         </div>
 
