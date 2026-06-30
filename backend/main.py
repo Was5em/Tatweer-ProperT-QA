@@ -1,4 +1,9 @@
 import os
+from dotenv import load_dotenv
+
+# Load environment variables first (force override)
+load_dotenv(override=True)
+
 import shutil
 from datetime import datetime
 from typing import List, Optional
@@ -19,10 +24,20 @@ models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="OS Precision Audit API")
 
-# Configure CORS to accept requests from Frontend port
+# Configure CORS to accept requests from Frontend dev server ports
+# Vite auto-increments port when 5173 is busy (5174, 5175, etc.)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],
+    allow_origins=[
+        "http://localhost:5173",
+        "http://localhost:5174",
+        "http://localhost:5175",
+        "http://localhost:5176",
+        "http://127.0.0.1:5173",
+        "http://127.0.0.1:5174",
+        "http://127.0.0.1:5175",
+        "http://127.0.0.1:5176",
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -71,20 +86,16 @@ async def audit_call(
         mime_type = audio.content_type or "audio/mpeg"
         result = analyze_audio(temp_filepath, display_name=f"Audio_{call_id}")
         
-        # Calculate sub-scores based on Gemini infraction counts
-        cc_score = max(0, min(100, 100 - (result.get("NC", 0) * 10)))
-        bc_score = max(0, min(100, 100 - (result.get("BC", 0) * 10)))
-        
-        # Immediate fail for critical error (EC)
-        ec_score = 0 if result.get("EC", 0) > 0 else 100
-        
-        # Next steps score based on greeting/closing NC counts
-        nc_score = max(0, min(100, 100 - (result.get("NC", 0) * 10)))
+        # Get the 4 scores calculated natively by Gemini
+        cc_score = result.get("cc_score", 100)
+        bc_score = result.get("bc_score", 100)
+        ec_score = result.get("ec_score", 100)
+        nc_score = result.get("nc_score", 100)
         
         # Calculate total score average
         avg_score = round((cc_score + bc_score + ec_score + nc_score) / 4)
         
-        # Override status if EC is committed
+        # Override status if EC is committed or avg < 70
         final_status = "Fail" if (ec_score == 0 or avg_score < 70) else result.get("status", "Pass")
 
         # Compile list of errors from failed checklist items
@@ -126,7 +137,7 @@ async def audit_call(
             call_id=call_id,
             evaluation_date=evaluation_date,
             status=final_status,
-            total_score=f"{avg_score}%",
+            total_score=avg_score,
             pdf_report_path=pdf_download_url,
             cc_score=cc_score,
             bc_score=bc_score,
@@ -222,7 +233,7 @@ def get_stats(db: Session = Depends(get_db)):
     pass_rate = f"{round((passes / total_audits) * 100)}%"
 
     # Compute averages
-    sum_score = sum(int(a.total_score.replace("%", "")) for a in audits)
+    sum_score = sum(a.total_score for a in audits)
     avg_score = round(sum_score / total_audits)
 
     avg_cc = round(sum(a.cc_score for a in audits) / total_audits)
@@ -241,14 +252,14 @@ def get_stats(db: Session = Depends(get_db)):
             formatted_date = a.evaluation_date[:11] if a.evaluation_date else "Unknown"
         trends.append({
             "name": formatted_date,
-            "score": int(a.total_score.replace("%", "")),
+            "score": a.total_score,
             "agent": a.agent_name
         })
 
     # Group scores by agent for ranking leaderboard
     agent_stats = {}
     for a in audits:
-        score_val = int(a.total_score.replace("%", ""))
+        score_val = a.total_score
         if a.agent_name not in agent_stats:
             agent_stats[a.agent_name] = {"sum": 0, "count": 0}
         agent_stats[a.agent_name]["sum"] += score_val
@@ -277,3 +288,9 @@ def get_stats(db: Session = Depends(get_db)):
             "agentRankings": agent_rankings
         }
     }
+
+# Serve the compiled React frontend statically in production
+FRONTEND_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "frontend", "dist")
+if os.path.exists(FRONTEND_DIR):
+    app.mount("/", StaticFiles(directory=FRONTEND_DIR, html=True), name="frontend")
+

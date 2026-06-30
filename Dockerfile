@@ -1,10 +1,16 @@
-# Use Python 3.11 slim image
-FROM python:3.11-slim
+# Stage 1: Build the React frontend
+FROM node:20-alpine AS frontend-builder
+WORKDIR /app/frontend
+COPY frontend/package*.json ./
+RUN npm install
+COPY frontend/ ./
+RUN npm run build
 
-# Set working directory
+# Stage 2: Final production image
+FROM python:3.11-slim
 WORKDIR /app
 
-# Install system dependencies (ffmpeg and build essentials for bcrypt/psycopg2)
+# Install system dependencies (ffmpeg and build essentials)
 RUN apt-get update && apt-get install -y \
     ffmpeg \
     build-essential \
@@ -12,20 +18,21 @@ RUN apt-get update && apt-get install -y \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy requirements file
-COPY requirements.txt .
+# Copy backend requirements and install them
+COPY backend/requirements.txt ./backend/
+RUN pip install --no-cache-dir -r backend/requirements.txt
 
-# Install Python dependencies
-RUN pip3 install --no-cache-dir -r requirements.txt
+# Copy backend application
+COPY backend/ ./backend/
 
-# Copy the rest of the application
-COPY . .
+# Copy built frontend assets from Stage 1
+COPY --from=frontend-builder /app/frontend/dist ./frontend/dist
 
-# Create directory for temp uploads
-RUN mkdir -p temp_uploads
-
-# Expose FastAPI port
+# Expose port 8000
 EXPOSE 8000
 
-# Run the application
-ENTRYPOINT ["python", "-m", "uvicorn", "api:app", "--host", "0.0.0.0", "--port", "8000"]
+# Set working directory to backend to run FastAPI
+WORKDIR /app/backend
+
+# Run the FastAPI application using Uvicorn
+ENTRYPOINT ["python", "-m", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]

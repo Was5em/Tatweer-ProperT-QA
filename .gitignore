@@ -43,3 +43,8 @@ backend/__pycache__/
 backend/sql_app.db
 sql_app.db
 *.db
+
+# Generated PDF reports
+backend/reports/*
+!backend/reports/.gitkeep
+

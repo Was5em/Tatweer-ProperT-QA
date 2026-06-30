@@ -4,40 +4,26 @@
   <meta charset="UTF-8">
   <title>OS Precision Audit - Scorecard Report</title>
   <style>
-    :root {
-      --bg: #f4f7fe;
-      --bg2: #ffffff;
-      --bg3: #e9edf7;
-      --text: #1b254b;
-      --text2: #68769f;
-      --text3: #a3aed1;
-      --border: #e9edf7;
-      --accent: #4318ff;
-      --green: #01b574;
-      --red: #ee5d50;
-    }
-
     body {
       font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-      background-color: var(--bg);
-      color: var(--text);
+      background-color: #f4f7fe;
+      color: #1b254b;
       margin: 0;
       padding: 30px;
       direction: ltr;
     }
 
     .report-card {
-      background: var(--bg2);
+      background: #ffffff;
       border-radius: 16px;
       padding: 35px;
-      border: 1px solid var(--border);
-      box-shadow: 0 10px 30px rgba(112, 144, 176, 0.08);
+      border: 1px solid #e9edf7;
       max-width: 800px;
       margin: 0 auto;
     }
 
     .header {
-      border-bottom: 2px solid var(--border);
+      border-bottom: 2px solid #e9edf7;
       padding-bottom: 20px;
       margin-bottom: 25px;
     }
@@ -50,7 +36,7 @@
     }
 
     .header p {
-      color: var(--text2);
+      color: #68769f;
       font-size: 13px;
       margin: 5px 0 0 0;
     }
@@ -63,12 +49,12 @@
 
     .overview-table td {
       padding: 10px 15px;
-      border-bottom: 1px solid var(--border);
+      border-bottom: 1px solid #e9edf7;
       font-size: 14px;
     }
 
     .overview-label {
-      color: var(--text2);
+      color: #68769f;
       font-weight: 600;
       width: 30%;
     }
@@ -87,15 +73,15 @@
     }
 
     .badge.pass {
-      background-color: rgba(1, 181, 116, 0.1);
-      color: var(--green);
-      border: 1px solid rgba(1, 181, 116, 0.2);
+      background-color: #e5f7f1;
+      color: #01b574;
+      border: 1px solid #ccf0e3;
     }
 
     .badge.fail {
-      background-color: rgba(238, 93, 80, 0.1);
-      color: var(--red);
-      border: 1px solid rgba(238, 93, 80, 0.2);
+      background-color: #fdeeed;
+      color: #ee5d50;
+      border: 1px solid #fcdcdc;
     }
 
     .scores-grid {
@@ -108,8 +94,8 @@
     .score-box {
       display: table-cell;
       text-align: center;
-      background: var(--bg);
-      border: 1px solid var(--border);
+      background: #f4f7fe;
+      border: 1px solid #e9edf7;
       padding: 15px;
       border-radius: 10px;
       margin: 0 5px;
@@ -117,7 +103,7 @@
 
     .score-title {
       font-size: 11px;
-      color: var(--text2);
+      color: #68769f;
       text-transform: uppercase;
       font-weight: 700;
     }
@@ -125,7 +111,7 @@
     .score-val {
       font-size: 22px;
       font-weight: 800;
-      color: var(--accent);
+      color: #4318ff;
       margin-top: 5px;
     }
 
@@ -133,17 +119,17 @@
       font-size: 16px;
       font-weight: 700;
       margin: 25px 0 12px 0;
-      color: var(--text);
-      border-left: 4px solid var(--accent);
+      color: #1b254b;
+      border-left: 4px solid #4318ff;
       padding-left: 10px;
     }
 
     .errors-summary {
-      background: rgba(238, 93, 80, 0.05);
-      border: 1px solid rgba(238, 93, 80, 0.15);
+      background: #fef7f6;
+      border: 1px solid #fce8e6;
       border-radius: 10px;
       padding: 20px;
-      color: var(--red);
+      color: #ee5d50;
       font-size: 14px;
       line-height: 1.5;
       margin-bottom: 25px;
@@ -156,30 +142,30 @@
     }
 
     .timeline-table th {
-      background: var(--bg);
-      color: var(--text2);
+      background: #f4f7fe;
+      color: #68769f;
       font-size: 11px;
       text-transform: uppercase;
       font-weight: 700;
       padding: 10px 15px;
       text-align: left;
-      border-bottom: 2px solid var(--border);
+      border-bottom: 2px solid #e9edf7;
     }
 
     .timeline-table td {
       padding: 12px 15px;
-      border-bottom: 1px solid var(--border);
+      border-bottom: 1px solid #e9edf7;
       font-size: 13px;
     }
 
     .coaching-section {
-      background: rgba(67, 24, 255, 0.03);
-      border: 1px solid rgba(67, 24, 255, 0.12);
+      background: #f6f4ff;
+      border: 1px solid #ebe7ff;
       border-radius: 10px;
       padding: 22px;
       font-size: 13.5px;
       line-height: 1.6;
-      color: var(--text);
+      color: #1b254b;
       white-space: pre-line;
     }
   </style>
@@ -215,7 +201,7 @@
       </tr>
       <tr>
         <td class="overview-label">Total Score</td>
-        <td class="overview-val" style="color: var(--accent); font-size: 16px;">{{ total_score }}</td>
+        <td class="overview-val" style="color: #4318ff; font-size: 16px;">{{ total_score }}</td>
       </tr>
     </table>
 
@@ -251,7 +237,7 @@
       </tr>
       <tr>
         <td class="overview-label">Critical Errors (EC)</td>
-        <td class="overview-val" style="{{ 'color: var(--red);' if ec_count > 0 else '' }}">{{ ec_count }}</td>
+        <td class="overview-val" style="{{ 'color: #ee5d50;' if ec_count > 0 else '' }}">{{ ec_count }}</td>
       </tr>
     </table>
 

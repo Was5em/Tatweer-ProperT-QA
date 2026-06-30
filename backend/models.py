@@ -9,7 +9,7 @@ class CallAudit(Base):
     call_id = Column(String, unique=True, index=True, nullable=False)
     evaluation_date = Column(String, nullable=False)
     status = Column(String, nullable=False)  # "Pass" or "Fail"
-    total_score = Column(String, nullable=False)  # e.g. "85%"
+    total_score = Column(Integer, nullable=False)  # e.g. 85
     pdf_report_path = Column(String, nullable=False)
     
     # Detailed sub-scores for statistics calculations

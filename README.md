@@ -76,20 +76,28 @@ The application is structured as a **Single Page Application (SPA)** with a vani
 
 ```
 os-precision-audit/
-├── api.py           # FastAPI server (REST endpoints, static files mount)
-├── core.py          # Gemini AI QA analysis engine, PDF generation (ReportLab)
-├── database.py      # SQLAlchemy models, AuthManager, DataManager
-├── config.py        # Centralized configurations (branding, AI settings, secrets)
-├── requirements.txt # Python package dependencies
-├── packages.txt     # System package requirements (ffmpeg)
-├── Dockerfile       # Container definition (configured for FastAPI on port 8000)
-├── docker-compose.yml # Docker Compose config (Postgres, Redis, Celery, App stack)
-├── logo.png         # Brand logo (displayed in sidebar)
-├── static/          # Single Page Application assets
-│   ├── index.html   # Main SPA HTML structure (Login, Sidebar, Views)
-│   ├── style.css    # Modern CSS3 stylesheet (Navy/Red branding)
-│   └── app.js       # Client router, fetch handlers, Chart.js setups
-└── README.md        # This file
+├── backend/            # FastAPI Backend
+│   ├── main.py         # REST endpoints & static frontend mount
+│   ├── database.py     # Database connection setup (SQLite/Postgres)
+│   ├── models.py       # SQLAlchemy database model definitions
+│   ├── schemas.py      # Pydantic schemas (FastAPI & Gemini output)
+│   ├── services/
+│   │   ├── gemini_service.py # Files API uploading, prompting & calculations
+│   │   └── pdf_service.py    # English PDF report rendering via xhtml2pdf
+│   ├── templates/      # Jinja2 PDF HTML templates
+│   └── requirements.txt  # Python requirements
+├── frontend/           # React + Vite Frontend
+│   ├── src/
+│   │   ├── App.jsx     # Main React Dashboard
+│   │   ├── main.jsx    # React mounting entrypoint
+│   │   ├── index.css   # Main stylesheet (Premium SaaS variables)
+│   │   └── App.css     # React layout styles
+│   ├── index.html      # HTML entrypoint
+│   └── package.json    # Frontend npm dependencies
+├── Dockerfile          # Multi-stage Docker build config
+├── docker-compose.yml  # Local stack containerization setup
+├── package.json        # Concurrent workspace scripts
+└── README.md           # This file
 ```
 
 ---
@@ -103,22 +111,32 @@ cd Tatweer-ProperT-QA
 ```
 
 ### 2. Install system dependencies
-Install `ffmpeg` (required for audio processing):
+Ensure `ffmpeg` is installed for handling audio files (required by pydub):
 *   **Linux (Ubuntu/Debian):** `sudo apt update && sudo apt install -y ffmpeg`
 *   **macOS (Homebrew):** `brew install ffmpeg`
 *   **Windows (Chocolatey):** `choco install ffmpeg`
 
-### 3. Install Python dependencies
+### 3. Install npm and python dependencies
+Run the automated installation script:
 ```bash
+npm run install:all
+```
+Set up the virtual environment in `backend/` and install requirements:
+```bash
+cd backend
+python -m venv venv
+.\venv\Scripts\activate  # Windows
+source venv/bin/activate # Linux/macOS
 pip install -r requirements.txt
+cd ..
 ```
 
-### 4. Run the Web Server
-Launch the FastAPI server using Uvicorn:
+### 4. Run the Dev Servers
+Start both the Vite development server (port 5173) and the FastAPI server (port 5000) concurrently:
 ```bash
-python -m uvicorn api:app --host 127.0.0.1 --port 8000
+npm run dev
 ```
-Open your browser and navigate to `http://127.0.0.1:8000/` to access the portal.
+Open your browser and navigate to `http://localhost:5173/` to access the portal.
 
 ---
 

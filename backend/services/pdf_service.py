@@ -12,7 +12,7 @@ if not os.path.exists(REPORTS_DIR):
 
 def generate_pdf_report(data: dict, filename: str) -> str:
     """
-    Renders HTML Jinja2 template and compiles it into a PDF file using xhtml2pdf.
+    Renders HTML Jinja2 template and compiles it into an English PDF report using xhtml2pdf.
     """
     env = Environment(loader=FileSystemLoader(TEMPLATE_DIR))
     template = env.get_template("report_template.html")
