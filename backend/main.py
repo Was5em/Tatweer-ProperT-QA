@@ -54,6 +54,25 @@ for folder in [UPLOADS_DIR, REPORTS_DIR]:
 # Mount the reports directory statically to serve PDF downloads
 app.mount("/api/reports", StaticFiles(directory=REPORTS_DIR), name="reports")
 
+from pydantic import BaseModel
+
+class LoginRequest(BaseModel):
+    username: str
+    password: str
+
+ADMIN_USERNAME = os.environ.get("ADMIN_USERNAME", "admin")
+ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "@A152007#")
+
+@app.post("/api/auth/login")
+async def login(req: LoginRequest):
+    if req.username == ADMIN_USERNAME and req.password == ADMIN_PASSWORD:
+        return {
+            "success": True,
+            "token": "admin-super-secure-token-2026",
+            "role": "admin"
+        }
+    raise HTTPException(status_code=401, detail="Invalid username or password")
+
 @app.post("/api/audit")
 async def audit_call(
     agent_name: str = Form(...),

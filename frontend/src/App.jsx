@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { RefreshCw, AlertCircle } from "lucide-react";
+import { RefreshCw, AlertCircle, LogOut } from "lucide-react";
 
 // Import modular components
 import KPICards from "./components/KPICards";
@@ -10,11 +10,13 @@ import CallLogTable from "./components/CallLogTable";
 import Leaderboard from "./components/Leaderboard";
 import AuditProgressModal from "./components/AuditProgressModal";
 import ScorecardModal from "./components/ScorecardModal";
+import LoginView from "./components/LoginView";
 
 // API Base URL
 const API_URL = "http://localhost:5000/api";
 
 function App() {
+  const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem("admin_token"));
   const [history, setHistory] = useState([]);
   const [stats, setStats] = useState({
     totalAudits: 0,
@@ -43,8 +45,10 @@ function App() {
   const [selectedAudit, setSelectedAudit] = useState(null);
 
   useEffect(() => {
-    fetchData();
-  }, []);
+    if (isAuthenticated) {
+      fetchData();
+    }
+  }, [isAuthenticated]);
 
   const fetchData = async () => {
     setLoading(true);
@@ -82,6 +86,16 @@ function App() {
     }
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem("admin_token");
+    localStorage.removeItem("admin_user");
+    setIsAuthenticated(false);
+  };
+
+  if (!isAuthenticated) {
+    return <LoginView API_URL={API_URL} onLoginSuccess={() => setIsAuthenticated(true)} />;
+  }
+
   return (
     <div className="app-container">
       {/* Top Header */}
@@ -100,6 +114,10 @@ function App() {
           <button className="btn btn-outline" onClick={handleRefresh} disabled={refreshing}>
             <RefreshCw className={refreshing ? "spin-fast" : ""} size={15} style={{ marginRight: "0.5rem" }} />
             Refresh
+          </button>
+          <button className="btn btn-outline" onClick={handleLogout} style={{ borderColor: "rgba(244, 63, 94, 0.2)", color: "#fda4af" }}>
+            <LogOut size={15} style={{ marginRight: "0.5rem" }} />
+            Logout
           </button>
         </div>
       </div>
