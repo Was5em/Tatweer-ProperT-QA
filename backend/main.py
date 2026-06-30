@@ -208,6 +208,16 @@ def get_history(db: Session = Depends(get_db)):
         })
     return {"success": True, "data": history_list}
 
+def parse_score(val) -> int:
+    if val is None:
+        return 0
+    if isinstance(val, int):
+        return val
+    try:
+        return int(str(val).replace("%", "").strip())
+    except Exception:
+        return 0
+
 @app.get("/api/stats")
 def get_stats(db: Session = Depends(get_db)):
     audits = db.query(models.CallAudit).all()
@@ -233,7 +243,7 @@ def get_stats(db: Session = Depends(get_db)):
     pass_rate = f"{round((passes / total_audits) * 100)}%"
 
     # Compute averages
-    sum_score = sum(a.total_score for a in audits)
+    sum_score = sum(parse_score(a.total_score) for a in audits)
     avg_score = round(sum_score / total_audits)
 
     avg_cc = round(sum(a.cc_score for a in audits) / total_audits)
@@ -252,14 +262,14 @@ def get_stats(db: Session = Depends(get_db)):
             formatted_date = a.evaluation_date[:11] if a.evaluation_date else "Unknown"
         trends.append({
             "name": formatted_date,
-            "score": a.total_score,
+            "score": parse_score(a.total_score),
             "agent": a.agent_name
         })
 
     # Group scores by agent for ranking leaderboard
     agent_stats = {}
     for a in audits:
-        score_val = a.total_score
+        score_val = parse_score(a.total_score)
         if a.agent_name not in agent_stats:
             agent_stats[a.agent_name] = {"sum": 0, "count": 0}
         agent_stats[a.agent_name]["sum"] += score_val
