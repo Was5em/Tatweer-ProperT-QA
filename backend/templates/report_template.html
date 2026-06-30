@@ -4,280 +4,420 @@
   <meta charset="UTF-8">
   <title>OS Precision Audit - Scorecard Report</title>
   <style>
+    @page {
+      size: A4;
+      margin: 1.5cm;
+    }
+
     body {
       font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-      background-color: #f4f7fe;
-      color: #1b254b;
+      color: #1a202c;
       margin: 0;
-      padding: 30px;
-      direction: ltr;
+      padding: 0;
+      font-size: 11px;
+      line-height: 1.4;
     }
 
-    .report-card {
-      background: #ffffff;
-      border-radius: 16px;
-      padding: 35px;
-      border: 1px solid #e9edf7;
-      max-width: 800px;
-      margin: 0 auto;
+    /* General Overview Header Table */
+    .header-table {
+      width: 100%;
+      border-bottom: 2px solid #ed4224;
+      padding-bottom: 8px;
+      margin-bottom: 20px;
     }
 
-    .header {
-      border-bottom: 2px solid #e9edf7;
-      padding-bottom: 20px;
-      margin-bottom: 25px;
-    }
-
-    .header h1 {
+    .brand-title {
       font-size: 24px;
-      margin: 0;
-      font-weight: 800;
-      letter-spacing: -0.02em;
+      font-weight: bold;
+      color: #0a192f;
+      letter-spacing: -0.5px;
     }
 
-    .header p {
-      color: #68769f;
-      font-size: 13px;
-      margin: 5px 0 0 0;
+    .brand-subtitle {
+      font-size: 10px;
+      color: #ed4224;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-top: 1px;
     }
 
+    .meta-details {
+      font-size: 9px;
+      color: #718096;
+      line-height: 1.3;
+    }
+
+    /* Sub-section headings */
+    .section-title {
+      font-size: 12px;
+      font-weight: bold;
+      color: #ffffff;
+      background-color: #0a192f;
+      padding: 5px 10px;
+      margin-top: 15px;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* General overview info table */
     .overview-table {
       width: 100%;
       border-collapse: collapse;
-      margin-bottom: 25px;
+      margin-bottom: 10px;
     }
 
     .overview-table td {
-      padding: 10px 15px;
-      border-bottom: 1px solid #e9edf7;
-      font-size: 14px;
+      padding: 6px 10px;
+      border-bottom: 1px solid #e2e8f0;
+      font-size: 11px;
     }
 
     .overview-label {
-      color: #68769f;
-      font-weight: 600;
-      width: 30%;
+      color: #4a5568;
+      font-weight: bold;
+      width: 35%;
     }
 
     .overview-val {
-      font-weight: 700;
+      font-weight: normal;
+      color: #2d3748;
     }
 
-    .badge {
-      display: inline-block;
-      padding: 5px 12px;
-      border-radius: 6px;
-      font-size: 12px;
-      font-weight: 700;
-      text-transform: uppercase;
-    }
-
-    .badge.pass {
-      background-color: #e5f7f1;
-      color: #01b574;
-      border: 1px solid #ccf0e3;
-    }
-
-    .badge.fail {
-      background-color: #fdeeed;
-      color: #ee5d50;
-      border: 1px solid #fcdcdc;
-    }
-
-    .scores-grid {
-      display: table;
-      width: 100%;
-      table-layout: fixed;
-      margin-bottom: 30px;
-    }
-
-    .score-box {
-      display: table-cell;
+    /* Circular Pass/Fail Stamp Box */
+    .badge-stamp {
+      width: 90px;
+      height: 90px;
+      border-radius: 45px;
+      border: 5px solid;
       text-align: center;
-      background: #f4f7fe;
-      border: 1px solid #e9edf7;
-      padding: 15px;
-      border-radius: 10px;
-      margin: 0 5px;
+      vertical-align: middle;
     }
 
-    .score-title {
+    .pass-stamp {
+      border-color: #28a745;
+      color: #28a745;
+      background-color: #f5fff6;
+    }
+
+    .fail-stamp {
+      border-color: #dc3545;
+      color: #dc3545;
+      background-color: #fff5f5;
+    }
+
+    .badge-text {
+      font-size: 20px;
+      font-weight: bold;
+      line-height: 80px;
+      letter-spacing: 1px;
+    }
+
+    /* Critical violation box styles */
+    .alert-box {
+      background-color: #fff5f5;
+      border: 1px solid #ffc1c7;
+      border-left: 5px solid #dc3545;
+      padding: 10px;
+      margin-bottom: 15px;
+    }
+
+    .alert-title {
+      color: #dc3545;
+      font-weight: bold;
       font-size: 11px;
-      color: #68769f;
+      margin-bottom: 4px;
       text-transform: uppercase;
-      font-weight: 700;
     }
 
-    .score-val {
-      font-size: 22px;
-      font-weight: 800;
-      color: #4318ff;
-      margin-top: 5px;
+    .alert-content {
+      font-size: 10px;
+      color: #2d3748;
+      line-height: 1.3;
     }
 
-    .section-title {
-      font-size: 16px;
-      font-weight: 700;
-      margin: 25px 0 12px 0;
-      color: #1b254b;
-      border-left: 4px solid #4318ff;
-      padding-left: 10px;
+    /* Card score layout */
+    .metric-card {
+      background-color: #f8fafc;
+      border: 1px solid #e2e8f0;
+      padding: 8px;
+      text-align: center;
+      margin: 0 4px;
     }
 
-    .errors-summary {
-      background: #fef7f6;
-      border: 1px solid #fce8e6;
-      border-radius: 10px;
-      padding: 20px;
-      color: #ee5d50;
-      font-size: 14px;
-      line-height: 1.5;
-      margin-bottom: 25px;
+    .metric-title {
+      font-size: 9px;
+      color: #718096;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+      font-weight: bold;
     }
 
+    .metric-value {
+      font-size: 18px;
+      font-weight: bold;
+      color: #0a192f;
+    }
+
+    /* Timeline evaluation table */
     .timeline-table {
       width: 100%;
       border-collapse: collapse;
-      margin-bottom: 30px;
+      margin-bottom: 15px;
     }
 
     .timeline-table th {
-      background: #f4f7fe;
-      color: #68769f;
-      font-size: 11px;
-      text-transform: uppercase;
-      font-weight: 700;
-      padding: 10px 15px;
+      background-color: #0a192f;
+      color: #ffffff;
+      padding: 5px 8px;
+      font-size: 10px;
       text-align: left;
-      border-bottom: 2px solid #e9edf7;
+      font-weight: bold;
     }
 
     .timeline-table td {
-      padding: 12px 15px;
-      border-bottom: 1px solid #e9edf7;
-      font-size: 13px;
+      padding: 6px 8px;
+      border-bottom: 1px solid #e2e8f0;
+      font-size: 10px;
+      vertical-align: top;
     }
 
-    .coaching-section {
-      background: #f6f4ff;
-      border: 1px solid #ebe7ff;
-      border-radius: 10px;
-      padding: 22px;
-      font-size: 13.5px;
-      line-height: 1.6;
-      color: #1b254b;
-      white-space: pre-line;
+    .status-pass {
+      color: #28a745;
+      font-weight: bold;
     }
+
+    .status-fail {
+      color: #dc3545;
+      font-weight: bold;
+    }
+
+    /* Coaching notes container */
+    .coaching-section {
+      background-color: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-left: 4px solid #0a192f;
+      padding: 10px;
+      font-size: 10px;
+      color: #2d3748;
+      line-height: 1.4;
+    }
+
   </style>
 </head>
 <body>
 
-  <div class="report-card">
-    <div class="header">
-      <h1>OS Precision Audit</h1>
-      <p>Call Quality Evaluation Report & Agent Scorecard</p>
-    </div>
+  <!-- Header -->
+  <table class="header-table">
+    <tr>
+      <td width="55%" valign="middle">
+        <div class="brand-title">OS PRECISION</div>
+        <div class="brand-subtitle">Enterprise QA Audit Report</div>
+      </td>
+      <td width="45%" align="right" valign="middle" class="meta-details">
+        <strong>Assurance Hub Marketing</strong><br>
+        Medical Alert Quality Campaign<br>
+        Call Performance Scorecard
+      </td>
+    </tr>
+  </table>
 
-    <table class="overview-table">
+  <!-- General Overview & Badge Stamp -->
+  <div class="section-title">General Overview</div>
+  <table width="100%" style="margin-bottom: 15px;">
+    <tr>
+      <td width="70%" valign="top" style="padding-right: 15px;">
+        <table class="overview-table">
+          <tr>
+            <td class="overview-label">Call ID</td>
+            <td class="overview-val">{{ call_id }}</td>
+          </tr>
+          <tr>
+            <td class="overview-label">Agent Name</td>
+            <td class="overview-val">{{ agent_name }}</td>
+          </tr>
+          <tr>
+            <td class="overview-label">Evaluation Date</td>
+            <td class="overview-val">{{ evaluation_date }}</td>
+          </tr>
+          <tr>
+            <td class="overview-label">Total Score</td>
+            <td class="overview-val" style="font-weight: bold; color: #ed4224; font-size: 12px;">{{ total_score }}</td>
+          </tr>
+          <tr>
+            <td class="overview-label">Final Status</td>
+            <td class="overview-val">
+              <span class="{{ 'status-pass' if status == 'Pass' else 'status-fail' }}" style="font-weight: bold; text-transform: uppercase;">
+                {{ status }}
+              </span>
+            </td>
+          </tr>
+        </table>
+      </td>
+      <td width="30%" align="center" valign="middle">
+        {% if status == "Pass" %}
+        <div class="badge-stamp pass-stamp">
+          <div class="badge-text">PASS</div>
+        </div>
+        {% else %}
+        <div class="badge-stamp fail-stamp">
+          <div class="badge-text">FAIL</div>
+        </div>
+        {% endif %}
+      </td>
+    </tr>
+  </table>
+
+  <!-- Critical violation banner if failed -->
+  {% if status == "Fail" or ec_count > 0 %}
+  <div class="alert-box">
+    <div class="alert-title">Critical Auto-Fail Violation or Score Threshold Breach Detected</div>
+    <div class="alert-content">
+      <strong>Details:</strong> 
+      {% if ec_count > 0 %}
+        Agent committed an Extreme/Critical compliance violation. Automatic Audit Fail triggered.
+      {% else %}
+        The agent scorecard fell below the standard 70% quality performance threshold.
+      {% endif %}
+      <div style="margin-top: 5px;">
+        <strong>Infractions Logged:</strong> {{ errors }}
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- Audit Metrics Cards Grid -->
+  <div class="section-title">Audit Metrics Overview</div>
+  <table width="100%" style="margin-bottom: 20px;">
+    <tr>
+      <td width="25%">
+        <div class="metric-card">
+          <div class="metric-title">Connection (CC)</div>
+          <div class="metric-value">{{ cc_score }}</div>
+        </div>
+      </td>
+      <td width="25%">
+        <div class="metric-card">
+          <div class="metric-title">Compliance (BC)</div>
+          <div class="metric-value">{{ bc_score }}</div>
+        </div>
+      </td>
+      <td width="25%">
+        <div class="metric-card">
+          <div class="metric-title">Execution (EC)</div>
+          <div class="metric-value" style="{{ 'color: #dc3545;' if ec_score == 0 else '' }}">{{ ec_score }}</div>
+        </div>
+      </td>
+      <td width="25%">
+        <div class="metric-card">
+          <div class="metric-title">Next Steps (NC)</div>
+          <div class="metric-value">{{ nc_score }}</div>
+        </div>
+      </td>
+    </tr>
+  </table>
+
+  <!-- Compliance Classifications -->
+  <div class="section-title">Compliance Classifications & Errors</div>
+  <table class="overview-table" style="margin-bottom: 20px;">
+    <thead>
+      <tr style="background-color: #f8fafc; font-weight: bold;">
+        <td style="padding: 6px 10px; width: 70%; border-bottom: 2px solid #e2e8f0;">Infraction Category</td>
+        <td style="padding: 6px 10px; width: 30%; border-bottom: 2px solid #e2e8f0; text-align: center;">Violations Count</td>
+      </tr>
+    </thead>
+    <tbody>
       <tr>
-        <td class="overview-label">Agent Name</td>
-        <td class="overview-val">{{ agent_name }}</td>
+        <td style="padding: 6px 10px;">Normal Errors (NC)</td>
+        <td style="padding: 6px 10px; text-align: center; font-weight: bold;">{{ nc_count }}</td>
       </tr>
       <tr>
-        <td class="overview-label">Call ID</td>
-        <td class="overview-val">{{ call_id }}</td>
+        <td style="padding: 6px 10px;">Process Errors (BC)</td>
+        <td style="padding: 6px 10px; text-align: center; font-weight: bold;">{{ bc_count }}</td>
       </tr>
       <tr>
-        <td class="overview-label">Evaluation Date</td>
-        <td class="overview-val">{{ evaluation_date }}</td>
+        <td style="padding: 6px 10px;">Critical Errors (EC)</td>
+        <td style="padding: 6px 10px; text-align: center; font-weight: bold; {{ 'color: #dc3545;' if ec_count > 0 else '' }}">{{ ec_count }}</td>
       </tr>
+    </tbody>
+  </table>
+
+  <!-- Performance Analysis (Strengths vs Improvement) -->
+  <div class="section-title">Performance Analysis</div>
+  <table width="100%" style="margin-bottom: 20px;">
+    <tr>
+      <td width="50%" valign="top" style="padding-right: 10px;">
+        <div style="background-color: #f5fff6; border: 1px solid #c3e6cb; border-top: 3px solid #28a745; padding: 10px; min-height: 120px;">
+          <div style="color: #28a745; font-weight: bold; font-size: 11px; margin-bottom: 6px;">✓ Strengths</div>
+          <ul style="margin: 0; padding-left: 15px; font-size: 9px; color: #2d3748; line-height: 1.4;">
+            {% set ns_pass = namespace(has_pass=false) %}
+            {% for item in detailed_scoring %}
+              {% if item.pass_fail == 'Pass' %}
+                {% set ns_pass.has_pass = true %}
+                <li style="margin-bottom: 4px;"><strong>{{ item.category }}:</strong> {{ item.description }}</li>
+              {% endif %}
+            {% endfor %}
+            {% if not ns_pass.has_pass %}
+              <li>No explicit strengths recorded in this call.</li>
+            {% endif %}
+          </ul>
+        </div>
+      </td>
+      <td width="50%" valign="top" style="padding-left: 10px;">
+        <div style="background-color: #fff5f5; border: 1px solid #ffc1c7; border-top: 3px solid #dc3545; padding: 10px; min-height: 120px;">
+          <div style="color: #dc3545; font-weight: bold; font-size: 11px; margin-bottom: 6px;">✗ Areas for Improvement</div>
+          <ul style="margin: 0; padding-left: 15px; font-size: 9px; color: #2d3748; line-height: 1.4;">
+            {% set ns_fail = namespace(has_fail=false) %}
+            {% for item in detailed_scoring %}
+              {% if item.pass_fail == 'Fail' %}
+                {% set ns_fail.has_fail = true %}
+                <li style="margin-bottom: 4px;"><strong>{{ item.category }}:</strong> {{ item.description }}</li>
+              {% endif %}
+            {% endfor %}
+            {% if not ns_fail.has_fail %}
+              <li>No compliance infractions or areas for improvement recorded.</li>
+            {% endif %}
+          </ul>
+        </div>
+      </td>
+    </tr>
+  </table>
+
+  <!-- Page Break for detailed timeline and coaching to ensure neat printable PDF layout -->
+  <div style="page-break-before: always;"></div>
+
+  <!-- Detailed Timeline Table -->
+  <div class="section-title">Detailed Call Evaluation Timeline</div>
+  <table class="timeline-table">
+    <thead>
       <tr>
-        <td class="overview-label">Final Status</td>
-        <td>
-          <span class="badge {{ 'pass' if status == 'Pass' else 'fail' }}">
-            {{ status }}
+        <th style="width: 15%;">Timestamp</th>
+        <th style="width: 25%;">Category</th>
+        <th style="width: 45%;">Description</th>
+        <th style="width: 15%; text-align: center;">Evaluation</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in detailed_scoring %}
+      <tr>
+        <td><strong>{{ item.timestamp }}</strong></td>
+        <td style="color: #4a5568;">{{ item.category }}</td>
+        <td style="color: #2d3748; line-height: 1.3;">{{ item.description }}</td>
+        <td style="text-align: center;">
+          <span class="{{ 'status-pass' if item.pass_fail == 'Pass' else 'status-fail' }}" style="font-size: 9px; text-transform: uppercase;">
+            {{ item.pass_fail }}
           </span>
         </td>
       </tr>
-      <tr>
-        <td class="overview-label">Total Score</td>
-        <td class="overview-val" style="color: #4318ff; font-size: 16px;">{{ total_score }}</td>
-      </tr>
-    </table>
+      {% endfor %}
+    </tbody>
+  </table>
 
-    <div class="section-title">Audit Metrics Overview</div>
-    <div class="scores-grid">
-      <div class="score-box">
-        <div class="score-title">Connection (CC)</div>
-        <div class="score-val">{{ cc_score }}</div>
-      </div>
-      <div class="score-box">
-        <div class="score-title">Compliance (BC)</div>
-        <div class="score-val">{{ bc_score }}</div>
-      </div>
-      <div class="score-box">
-        <div class="score-title">Execution (EC)</div>
-        <div class="score-val">{{ ec_score }}</div>
-      </div>
-      <div class="score-box">
-        <div class="score-title">Next Steps (NC)</div>
-        <div class="score-val">{{ nc_score }}</div>
-      </div>
-    </div>
-
-    <div class="section-title">Compliance Classifications & Errors</div>
-    <table class="overview-table" style="margin-bottom: 15px;">
-      <tr>
-        <td class="overview-label">Normal Errors (NC)</td>
-        <td class="overview-val">{{ nc_count }}</td>
-      </tr>
-      <tr>
-        <td class="overview-label">Process Errors (BC)</td>
-        <td class="overview-val">{{ bc_count }}</td>
-      </tr>
-      <tr>
-        <td class="overview-label">Critical Errors (EC)</td>
-        <td class="overview-val" style="{{ 'color: #ee5d50;' if ec_count > 0 else '' }}">{{ ec_count }}</td>
-      </tr>
-    </table>
-
-    {% if errors %}
-    <div class="errors-summary">
-      <strong>Compliance Infractions Logged:</strong><br>
-      {{ errors }}
-    </div>
-    {% endif %}
-
-    <div class="section-title">Detailed Call Evaluation Timeline</div>
-    <table class="timeline-table">
-      <thead>
-        <tr>
-          <th style="width: 15%;">Timestamp</th>
-          <th style="width: 25%;">Category</th>
-          <th style="width: 45%;">Description</th>
-          <th style="width: 15%; text-align: center;">Evaluation</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for item in detailed_scoring %}
-        <tr>
-          <td><strong>{{ item.timestamp }}</strong></td>
-          <td>{{ item.category }}</td>
-          <td>{{ item.description }}</td>
-          <td style="text-align: center;">
-            <span class="badge {{ 'pass' if item.pass_fail == 'Pass' else 'fail' }}" style="padding: 2px 6px; font-size: 10px;">
-              {{ item.pass_fail }}
-            </span>
-          </td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-
-    <div class="section-title">AI Coaching Feedback & Strategic Roadmap</div>
-    <div class="coaching-section">
-      {{ ai_feedback }}
-    </div>
+  <!-- AI Coaching Roadmap -->
+  <div class="section-title">AI Coaching Feedback & Strategic Roadmap</div>
+  <div class="coaching-section">
+    {{ ai_feedback }}
   </div>
 
 </body>
