@@ -149,8 +149,8 @@ Output the JSON response strictly formatted to match the required schema. Write 
 """
 
         # 5. Execute generation
-        # We read model from environment if specified, else fall back to gemini-1.5-flash
-        model_name = os.environ.get("GEMINI_MODEL", "gemini-1.5-flash")
+        # We read model from environment if specified, else fall back to gemini-2.5-flash
+        model_name = os.environ.get("GEMINI_MODEL", "gemini-2.5-flash")
         print(f"Analyzing audio using model {model_name}...")
         model = genai.GenerativeModel(model_name)
         
